@@ -6,6 +6,7 @@ export JAVA_HOME=/data/jdk8
 _repo=$1
 _changed=`svnlook changed $_repo`
 _author=`svnlook author $_repo`
+_comment=`svnlook log $_repo`
 _email=lihu@wcce.cn
 _findbugs=/data/findbugs-3.0.1/bin/findbugs
 _ant=/data/apache-ant-1.9.4/bin/ant
@@ -13,7 +14,7 @@ _sendmail=/data/workspace/mail.pl
 
 _pro_name=`echo $_changed |/data/workspace/get_name.pl`
 test -n "$_pro_name" || exit 1
-echo "\nproject name: $_pro_name"
+echo -e "\nproject name: $_pro_name"
 
 _dir=/data/workspace/$_pro_name
 test -d $_dir || exit 2
@@ -21,10 +22,10 @@ test -d $_dir || exit 2
 cd $_dir && svn up --username deploy --password 123456 --no-auth-cache && $_ant
 
 _class_str=`echo $_changed |/data/workspace/get_class.pl`
-echo "\nclasses: $_class_str"
+echo -e "\nclasses: $_class_str"
 
 _res=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
 test -n "$_res" || exit 3
 
-$_sendmail $_email "$_res"
-echo "\n$_res\n"
+$_sendmail $_email "$_pro_name" "$_res" "comment: $_comment"
+echo -e "\n$_res\n"
