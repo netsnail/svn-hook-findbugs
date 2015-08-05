@@ -8,6 +8,7 @@ _rev=$2
 _pwd=`dirname $0`
 _author=`svnlook author $_repo`
 _comment=`svnlook log $_repo`
+_date=`svnlook date $_repo`
 _email=lihu@wcce.cn
 _findbugs=/data/findbugs-3.0.1/bin/findbugs
 _ant=/data/apache-ant-1.9.4/bin/ant
@@ -21,10 +22,12 @@ test -d $_pwd/$_pro_name || exit 2
 cd $_pwd/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && $_ant
 
 _class_str=`svnlook changed $_repo |$_pwd/get_class.pl`
+test -n "$_class_str" || exit 3
 echo -e "\nclasses: $_class_str"
 
 _res=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
-test -n "$_res" || exit 3
+test -n "$_res" || exit 4
+echo -e "\n$_res"
 
 $_sendmail $_email "$_pro_name" "$_res" "author: $_author  comment: $_comment  revision: $_rev"
-echo -e "\n$_res\n"
+echo -e "\n$_date\n"
