@@ -16,18 +16,18 @@ _sendmail=/data/workspace/mail.pl
 
 _pro_name=`svnlook changed $_repo |$_pwd/get_name.pl`
 test -n "$_pro_name" || exit 1
-echo -e "\nproject name: $_pro_name"
+echo -e "project name: $_pro_name\n"
 
 test -d $_pwd/$_pro_name || exit 2
 cd $_pwd/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && $_ant
 
 _class_str=`svnlook changed $_repo |$_pwd/get_class.pl`
 test -n "$_class_str" || exit 3
-echo -e "\nclasses: $_class_str"
+echo -e "classes: $_class_str\n"
 
 _res=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
 test -n "$_res" || exit 4
-echo -e "\n$_res"
+echo -e "$_res\n"
 
 $_sendmail $_email "$_pro_name" "$_res" "author: $_author  comment: $_comment  revision: $_rev"
-echo -e "\n$_date\n"
+echo -e "$_date\n"
