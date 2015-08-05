@@ -2,7 +2,7 @@
 
 while($line = <>){
     if ($line =~ /\.java$/) {
-        $line =~ /\/(branches|trunk)\/(\w+)\//; 
+        $line =~ /\/branches\/(\w+)\//; 
 	$pro_name = $1;
 	print $pro_name;
 	last;
