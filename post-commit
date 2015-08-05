@@ -1,0 +1,6 @@
+#!/bin/sh
+
+REPOS="$1"
+REV="$2"
+
+/data/workspace/findbugs "$REPOS" >>/tmp/findbugs.log 2>&1 &
