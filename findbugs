@@ -25,9 +25,10 @@ _class_str=`svnlook changed $_repo |$_pwd/get_class.pl`
 test -n "$_class_str" || exit 3
 echo -e "classes: $_class_str\n"
 
-_res=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
-test -n "$_res" || exit 4
-echo -e "$_res\n"
+_bug=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
+test -n "$_bug" || exit 4
+echo -e "$_bug\n"
 
-$_sendmail $_email "$_pro_name" "$_res" "author: $_author  comment: $_comment  revision: $_rev"
+$_sendmail $_email "$_pro_name" "$_bug" "author: $_author  comment: $_comment  revision: $_rev"
+mysql -uroot -proot -h192.168.1.240 findbugs -e "insert into bugs (project,user,revision,bug,comment,create_time) values ($_pro_name,$_author,$_rev,$_bug,$_comment,now())"
 echo -e "$_date  author: $_author  revision: $_rev\n"
