@@ -9,7 +9,7 @@ _pwd=`dirname $0`
 _author=`svnlook author $_repo`
 _comment=`svnlook log $_repo`
 _date=`svnlook date $_repo`
-_email=lihu@wcce.cn
+_email=$_author@wcce.cn
 _findbugs=/data/findbugs-3.0.1/bin/findbugs
 _ant=/data/apache-ant-1.9.4/bin/ant
 _sendmail=/data/workspace/mail.pl
@@ -30,4 +30,4 @@ test -n "$_res" || exit 4
 echo -e "$_res\n"
 
 $_sendmail $_email "$_pro_name" "$_res" "author: $_author  comment: $_comment  revision: $_rev"
-echo -e "$_date\n"
+echo -e "$_date  author: $_author  revision: $_rev\n"
