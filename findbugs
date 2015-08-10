@@ -23,12 +23,7 @@ test -n "$_class_str" || exit 2
 echo -e "classes: $_class_str\n"
 
 test -d $_pwd/$_pro_name || exit 3
-cd $_pwd/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && $_ant && _bug=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
-
-test -n "$_bug" || {
-  $_sendmail $_email "$_pro_name" "Build filed!" "author: $_author  comment: $_comment  revision: $_rev"
-  exit 4
-}
+cd $_pwd/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && _bug=`$_ant` && _bug=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
 echo -e "$_bug\n"
 
 $_sendmail $_email "$_pro_name" "$_bug" "author: $_author  comment: $_comment  revision: $_rev"
