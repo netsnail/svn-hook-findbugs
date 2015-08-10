@@ -5,6 +5,7 @@ export JAVA_HOME=/data/jdk8
 
 _repo=$1
 _rev=$2
+
 _pwd=`dirname $0`
 _author=`svnlook author $_repo`
 _comment=`svnlook log $_repo`
@@ -12,13 +13,15 @@ _date=`svnlook date $_repo`
 _email=$_author@wcce.cn
 _findbugs=/data/findbugs-3.0.1/bin/findbugs
 _ant=/data/apache-ant-1.9.4/bin/ant
-_sendmail=/data/workspace/mail.pl
+_sendmail=$_pwd/mail.pl
+_getname=$_pwd/get_name.pl
+_getclass=$_pwd/get_class.pl
 
-_pro_name=`svnlook changed $_repo |$_pwd/get_name.pl`
+_pro_name=`svnlook changed $_repo |$_getname`
 test -n "$_pro_name" || exit 1
 echo -e "project name: $_pro_name\n"
 
-_class_str=`svnlook changed $_repo |$_pwd/get_class.pl`
+_class_str=`svnlook changed $_repo |$_getclass`
 test -n "$_class_str" || exit 2
 echo -e "classes: $_class_str\n"
 

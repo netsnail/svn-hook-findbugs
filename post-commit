@@ -3,4 +3,4 @@
 REPOS="$1"
 REV="$2"
 
-/data/workspace/findbugs "$REPOS" "$REV" >>/tmp/findbugs.log 2>&1 &
+/data/workspace/bin/findbugs "$REPOS" "$REV" >>/tmp/findbugs.log 2>&1 &
