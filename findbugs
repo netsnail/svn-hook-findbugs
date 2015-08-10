@@ -5,14 +5,15 @@ export JAVA_HOME=/data/jdk8
 
 _repo=$1
 _rev=$2
+_workdir=/data/workspace
 
-_pwd=`dirname $0`
 _author=`svnlook author $_repo`
 _comment=`svnlook log $_repo`
 _date=`svnlook date $_repo`
 _email=$_author@wcce.cn
 _findbugs=/data/findbugs-3.0.1/bin/findbugs
 _ant=/data/apache-ant-1.9.4/bin/ant
+_pwd=`dirname $0`
 _sendmail=$_pwd/mail.pl
 _getname=$_pwd/get_name.pl
 _getclass=$_pwd/get_class.pl
@@ -25,8 +26,8 @@ _class_str=`svnlook changed $_repo |$_getclass`
 test -n "$_class_str" || exit 2
 echo -e "classes: $_class_str\n"
 
-test -d $_pwd/$_pro_name || exit 3
-cd $_pwd/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && _bug=`$_ant` && _bug=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
+test -d $_workdir/$_pro_name || exit 3
+cd $_workdir/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && _bug=`$_ant` && _bug=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
 test -n "$_bug" || exit 4
 echo -e "$_bug\n"
 
