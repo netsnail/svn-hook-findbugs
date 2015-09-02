@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export LC_CTYPE=en_US.UTF-8
-export JAVA_HOME=/data/jdk8
+export JAVA_HOME=/opt/jdk7
 
 _repo=$1
 _rev=$2
@@ -17,6 +17,8 @@ _pwd=`dirname $0`
 _sendmail=$_pwd/mail.pl
 _getname=$_pwd/get_name.pl
 _getclass=$_pwd/get_class.pl
+_genfbp=$_pwd/gen_fbp.pl
+_redmine=$_pwd/redmine.php
 
 _pro_name=`svnlook changed $_repo |$_getname`
 test -n "$_pro_name" || exit 1
@@ -27,10 +29,14 @@ test -n "$_class_str" || exit 2
 echo -e "classes: $_class_str\n"
 
 test -d $_workdir/$_pro_name || exit 3
-cd $_workdir/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && _bug=`$_ant` && _bug=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
-test -n "$_bug" || exit 4
-echo -e "$_bug\n"
+cd $_workdir/$_pro_name && svn up --username deploy --password 123456 --no-auth-cache && {
+  $_genfbp $_pro_name >$_pro_name.fbp && svn commit --username deploy --password 123456 --no-auth-cache -m 'findbugs' $_pro_name.fbp
+  _bug=`$_ant` && _bug=`$_findbugs -textui -project *.fbp -onlyAnalyze $_class_str`
+  test -n "$_bug" || exit 4
+  echo -e "$_bug\n"
+}
 
+$_redmine "$_pro_name" "$_author" "Findbugs" "$_bug"
 $_sendmail $_email "$_pro_name" "$_bug" "author: $_author  comment: $_comment  revision: $_rev"
 mysql -uroot -proot -hdb findbugs -e "insert into bugs (project,user,revision,bug,comment,create_time) values ('$_pro_name','$_author','$_rev','${_bug//\'/}','${_comment//\'/}',now())"
 
