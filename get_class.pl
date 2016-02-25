@@ -8,6 +8,9 @@ while($line = <>){
     $index = index($line, $conn."/$pro_name/");
     $substr = substr($line,$index+$len,-6);
     $index = index($substr, "/");
-    print substr($substr,$index+1),",";
+    $res = substr($substr,$index+1);
+    $res =~ s/main\/java\///g;
+    $res =~ s/test\/java\///g;
+    print $res,",";
   }
 }

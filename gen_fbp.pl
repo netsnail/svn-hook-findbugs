@@ -20,9 +20,11 @@ if (-e $xmlfile)
     if ($key =~ /src/) { $key = "SrcDir"; }
     elsif ($key =~ /output/) { $key = "Jar"; }
     elsif ($key =~ /lib/) { $key = "AuxClasspathEntry"; }
+    elsif ($key =~ /var/) { $key = "AuxClasspathEntry"; }
     next if ($key =~ /con/);
 
     $value = $employee->{"path"};
+    $value =~ s/M2_REPO/\/home\/svn\/.m2\/repository/g;
     print "  <".$key.">".$value."</".$key.">\n";
   } 
   print "</Project>\n";
